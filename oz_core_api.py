@@ -1,9 +1,10 @@
 import os
+from urllib import urlencode
 
 import requests
 
 class OZCoreApi(object):
-    BASE_URL = 'https://core.oz.com'
+    BASE_URL = os.environ['OZ_API_URL'] if os.environ.has_key('OZ_API_URL') else 'https://core.oz.com'
 
     def __init__(self, username, password):
         required_env = ['OZ_CLIENT_ID', 'OZ_CLIENT_SECRET']
@@ -23,8 +24,8 @@ class OZCoreApi(object):
         url = '{0}/channels/{1}/videos?externalId={2}&all=true'.format(self.BASE_URL, self.channel_id, external_id)
         return self._fetch_object_at_uri(url)
 
-    def fetch_slot_by_video_id(self, video_id):
-        url = '{0}/channels/{1}/slots?videoId={2}'.format(self.BASE_URL, self.channel_id, video_id)
+    def fetch_slot_by_external_id(self, external_id):
+        url = '{0}/channels/{1}/slots?externalId={2}'.format(self.BASE_URL, self.channel_id, external_id)
         return self._fetch_object_at_uri(url)
 
     def create_collection(self, collection, **kwargs):
@@ -59,15 +60,14 @@ class OZCoreApi(object):
 
     def update_slot(self, slot, **kwargs):
         url = self._append_query_params(
-                '{0}/channels/{1}/slots/{2}'.format(self.BASE_URL, self.channel_id, slots['id']),
+                '{0}/channels/{1}/slots/{2}'.format(self.BASE_URL, self.channel_id, slot['id']),
                 **kwargs)
         return self._update_object_at_uri(slot, url)
 
     def _append_query_params(self, url, **kwargs):
-        for k, v in kwargs.iteritems():
-            url += '&{}={}'.format(k,v)
-
-        return url.replace('&', '?', 1)
+        if kwargs:
+            url += urlencode(**kwargs)
+        return url
 
     def _update_object_at_uri(self, obj, uri):
         r = requests.patch(uri, json=obj, headers={'Authorization': 'Bearer ' + self.access_token})
