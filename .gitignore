@@ -1,0 +1,3 @@
+*.pyc
+oz_python_client.egg-info/
+dist/
