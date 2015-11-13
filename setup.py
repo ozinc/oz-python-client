@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
   name = 'oz-python-client',
   packages = find_packages(),
-  version = '0.1',
+  version = '0.2',
   description = 'A python client to the OZ API',
   author = 'Kari Tristan Helgason',
   author_email = 'kari@oz.com',
