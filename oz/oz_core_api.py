@@ -16,16 +16,36 @@ class OZCoreApi(object):
 
         self.access_token = self._authenticate_user(username, password)
 
-    def fetch_collection_by_external_id(self, external_id):
-        url = '{0}/channels/{1}/collections?externalId={2}&all=true'.format(self.BASE_URL, self.channel_id, external_id)
+    def fetch_collection_by_external_id(self, external_id, **kwargs):
+        params = {
+                'external_id': external_id,
+                'all': 'true'
+        }
+        params.update(kwargs)
+        url = self._append_query_params(
+                '{0}/channels/{1}/collections'.format(self.BASE_URL, self.channel_id),
+                **params)
         return self._fetch_object_at_uri(url)
 
-    def fetch_video_by_external_id(self, external_id):
-        url = '{0}/channels/{1}/videos?externalId={2}&all=true'.format(self.BASE_URL, self.channel_id, external_id)
+    def fetch_video_by_external_id(self, external_id, **kwargs):
+        params = {
+                'external_id': external_id,
+                'all': 'true'
+        }
+        params.update(kwargs)
+        url = self._append_query_params(
+                '{0}/channels/{1}/videos'.format(self.BASE_URL, self.channel_id),
+                **params)
         return self._fetch_object_at_uri(url)
 
-    def fetch_slot_by_external_id(self, external_id):
-        url = '{0}/channels/{1}/slots?externalId={2}'.format(self.BASE_URL, self.channel_id, external_id)
+    def fetch_slot_by_external_id(self, external_id, **kwargs):
+        params = {
+                'external_id': external_id
+        }
+        params.update(kwargs)
+        url = self._append_query_params(
+                '{0}/channels/{1}/slots'.format(self.BASE_URL, self.channel_id),
+                **params)
         return self._fetch_object_at_uri(url)
 
     def create_collection(self, collection, **kwargs):
@@ -66,7 +86,7 @@ class OZCoreApi(object):
 
     def _append_query_params(self, url, **kwargs):
         if kwargs:
-            url += urlencode(**kwargs)
+            url += '?' + urlencode(kwargs)
         return url
 
     def _update_object_at_uri(self, obj, uri):
@@ -94,7 +114,7 @@ class OZCoreApi(object):
             else:
                 return objects[0]
         else:
-            raise Exception('an error occurred when fetching collection, status was: {0}'.format(r.status_code))
+            raise Exception('an error occurred when fetching object, status was: {0}'.format(r.status_code))
 
     def _authenticate_user(self, username, password):
         url = '{0}/oauth2/token'.format(self.BASE_URL)
