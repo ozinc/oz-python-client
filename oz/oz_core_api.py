@@ -18,7 +18,7 @@ class OZCoreApi(object):
 
     def fetch_collection_by_external_id(self, external_id, **kwargs):
         params = {
-                'external_id': external_id,
+                'externalId': external_id,
                 'all': 'true'
         }
         params.update(kwargs)
@@ -29,7 +29,7 @@ class OZCoreApi(object):
 
     def fetch_video_by_external_id(self, external_id, **kwargs):
         params = {
-                'external_id': external_id,
+                'externalId': external_id,
                 'all': 'true'
         }
         params.update(kwargs)
@@ -40,7 +40,7 @@ class OZCoreApi(object):
 
     def fetch_slot_by_external_id(self, external_id, **kwargs):
         params = {
-                'external_id': external_id
+                'externalId': external_id
         }
         params.update(kwargs)
         url = self._append_query_params(
