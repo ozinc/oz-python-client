@@ -96,14 +96,16 @@ class OZCoreApi(object):
         elif r.status_code is 404:
             return None
         else:
-            raise Exception('an error occurred when updating an object, status was: {0}'.format(r.status_code))
+            raise Exception('an error occurred when updating object, status was: {0}\nError: {1}'
+                    .format(r.status_code, r.text))
 
     def _create_object_at_uri(self, obj, uri):
         r = requests.post(uri, json=obj, headers={'Authorization': 'Bearer ' + self.access_token})
         if r.status_code is 201:
             return r.json()['data']
         else:
-            raise Exception('an error occurred when creating an object, status was: {0}'.format(r.status_code))
+            raise Exception('an error occurred when creating object, status was: {0}\nError: {1}'
+                    .format(r.status_code, r.text))
 
     def _fetch_object_at_uri(self, uri):
         r = requests.get(uri, headers={'Authorization': 'Bearer ' + self.access_token})
@@ -114,7 +116,8 @@ class OZCoreApi(object):
             else:
                 return objects[0]
         else:
-            raise Exception('an error occurred when fetching object, status was: {0}'.format(r.status_code))
+            raise Exception('an error occurred when fetching object, status was: {0}\nError: {1}'
+                    .format(r.status_code, r.text))
 
     def _authenticate_user(self, username, password):
         url = '{0}/oauth2/token'.format(self.BASE_URL)
@@ -129,4 +132,5 @@ class OZCoreApi(object):
         if r.status_code is 200:
             return r.json()['access_token']
         else:
-            raise Exception('An error occurred when authorizing, status was: {0}'.format(r.status_code))
+            raise Exception('an error occurred when authenticating, status was: {0}\nError: {1}'
+                    .format(r.status_code, r.text))
