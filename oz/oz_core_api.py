@@ -1,15 +1,18 @@
 import os
-from urllib import urlencode
+try:
+    from urllib import urlencode
+except ImportError:
+    from urllib.parse import urlencode
 
 import requests
 
 class OZCoreApi(object):
-    BASE_URL = os.environ['OZ_API_URL'] if os.environ.has_key('OZ_API_URL') else 'https://core.oz.com'
+    BASE_URL = os.environ['OZ_API_URL'] if 'OZ_API_URL' in os.environ else 'https://core.oz.com'
 
     def __init__(self, username, password):
         required_env = ['OZ_CLIENT_ID', 'OZ_CLIENT_SECRET']
         for var in required_env:
-            if not os.environ.has_key(var):
+            if not var in os.environ:
                 raise Exception('The required variable {0} was not set.'.format(var))
 
         self.client_id, self.client_secret = map(lambda var: os.environ[var], required_env)
