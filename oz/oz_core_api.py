@@ -51,6 +51,10 @@ class OZCoreApi(object):
                 **params)
         return self._fetch_object_at_uri(url)
 
+    def fetch_subtitles_by_video_id(self, video_id):
+        url = '{0}/channels/{1}/videos/{2}/subtitles'.format(self.BASE_URL, self.channel_id, video_id)
+        return self._fetch_object_at_uri(url)
+
     def create_collection(self, collection, **kwargs):
         url = self._append_query_params(
                 '{0}/channels/{1}/collections'.format(self.BASE_URL, self.channel_id),
@@ -68,6 +72,17 @@ class OZCoreApi(object):
                 '{0}/channels/{1}/videos'.format(self.BASE_URL, self.channel_id),
                 **kwargs)
         return self._create_object_at_uri(video, url)
+
+    def create_subtitle(self, props, **kwargs):
+        uri = '{0}/channels/{1}/videos/{2}/subtitles'.format(self.BASE_URL, self.channel_id, props['videoId'])
+        r = requests.post(uri, data={'languageCode': props['languageCode']},
+                files={props['originalFileName']: props['subtitleData']},
+                headers={'Authorization': 'Bearer ' + self.access_token})
+        if r.status_code is 201:
+            return r.json()['data']
+        else:
+            raise Exception('an error occurred when creating object, status was: {0}\nError: {1}'
+                    .format(r.status_code, r.text))
 
     def update_collection(self, collection, **kwargs):
         url = self._append_query_params(
