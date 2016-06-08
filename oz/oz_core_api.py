@@ -102,6 +102,10 @@ class OZCoreApi(object):
                 **kwargs)
         return self._update_object_at_uri(slot, url)
 
+    def fetch_primary_stream_for_channel(self, channel_id):
+        url = '{0}/channels/{1}/streams'.format(self.BASE_URL, channel_id)
+        return self._fetch_object_at_uri(url)
+
     def _append_query_params(self, url, **kwargs):
         if kwargs:
             url += '?' + urlencode(kwargs)
